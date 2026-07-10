@@ -2,7 +2,7 @@ from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 
 report_agent = LlmAgent(
-    name="report-agent",
+    name="report_agent",
     model= LiteLlm(model="openai/gemma-4-31b"),
     description="""Agent responsible for generating daily and weekly reports on content covered across communication channels.""",
     instruction="""
