@@ -1,9 +1,8 @@
 from google.adk.agents import LlmAgent
-from google.adk.models.lite_llm import LiteLlm
 
 report_agent = LlmAgent(
     name="report_agent",
-    model= LiteLlm(model="openai/gemma-4-31b"),
+    model="gemini-2.5-flash",
     description="""Agent responsible for generating daily and weekly reports on content covered across communication channels.""",
     instruction="""
                 You are an assistant that analyzes messages from a software development team's Discord 

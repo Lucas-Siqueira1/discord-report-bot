@@ -1,4 +1,3 @@
-import os 
 import asyncio
 import uuid
 from dotenv import load_dotenv
@@ -34,10 +33,6 @@ async def run(mensagens: str) -> str:
 
     
     return resposta_final
-
-if __name__ == "__main__":
-    resultado = asyncio.run(run("Mensagem de teste"))
-    print(resultado)
 
 
 
