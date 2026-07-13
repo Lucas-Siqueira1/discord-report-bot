@@ -1,0 +1,7 @@
+<<<<<<< HEAD
+google-adk
+google-adk[extensions]
+=======
+discord.py
+>>>>>>> temp-bot/main
+python-dotenv
