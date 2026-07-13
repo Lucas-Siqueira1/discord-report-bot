@@ -58,6 +58,6 @@ report_agent = LlmAgent(
                 - Use usernames exactly as they appear in the received messages.
                 - If the analyzed period covers a week, group information by theme, not by day — the leader wants 
                 a consolidated view, not a diary.
-                - Ensure your response contains a maximum of 2000 characters; do not exceed this amount under any circumstances.
+                - Ensure your response contains a maximum of 1800 characters; do not exceed this amount under any circumstances.
                 """
 )
