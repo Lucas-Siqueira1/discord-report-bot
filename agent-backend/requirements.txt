@@ -1,0 +1,3 @@
+google-adk
+google-adk[extensions]
+python-dotenv
