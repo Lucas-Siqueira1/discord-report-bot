@@ -1,8 +1,11 @@
+import os
+import datetime 
 import discord
+import requests
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-import datetime 
-import os
+from pydantic import BaseModel, TypeAdapter
+from typing import List
 
 load_dotenv()
 
@@ -19,6 +22,8 @@ time = datetime.time(hour=18, tzinfo=utc)
 canal = ""
 lider = ""
 
+url = "http://agent-backend:8000/report"
+
 @bot.event
 async def on_ready():
     global canal 
@@ -26,6 +31,14 @@ async def on_ready():
 
     canal = bot.get_channel(1525202052697821335)
     lider = await bot.fetch_user(834030976002031616)
+
+class Mensagem(BaseModel):
+    autor: str
+    hora: str
+    texto: str
+
+class ListaMensagens(BaseModel):
+    mensagens: List[Mensagem]
 
 @tasks.loop(time=time)
 async def rotina_diaria():
@@ -36,14 +49,17 @@ async def rotina_diaria():
     async for message in canal.history(limit=None, after=periodo):
         if not message.author.bot:
             historico_diario.append({
-                "usuario":message.author.name,
+                "autor":message.author.name,
                 "hora": message.created_at.strftime("%H:%M"),
                 "texto": message.content
             })
     
-    if not historico_diario:
-        print("Nenhuma nova mensagem foi enviada hoje")
-        return
+    historico_formatado = ListaMensagens(mensagens=historico_diario)
+
+    response = requests.post(url, json=historico_formatado.model_dump())
+    report = response.json()
+    
+    
     
 @tasks.loop(time=time)
 async def rotina_semanal():
@@ -63,9 +79,6 @@ async def rotina_semanal():
                 "texto": message.content
             })
         
-    if not historico_semanal:
-        print("Nenhuma nova mensagem enviada essa semana")
-        return
-    
+   
 bot.run(token)
     
