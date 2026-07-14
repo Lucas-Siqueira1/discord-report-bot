@@ -1,0 +1,16 @@
+services:
+  agent-backend:
+    build: ./agent-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./agent-backend/.env
+
+  bot-backend:
+    build: ./bot-backend
+    env_file:
+      - ./bot-backend/.env
+    environment:
+      - AGENT_URL=http://agent-backend:8000
+    depends_on:
+      - agent-backend
