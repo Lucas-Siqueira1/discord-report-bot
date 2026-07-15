@@ -4,7 +4,7 @@ import discord
 import requests
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-from pydantic import BaseModel, TypeAdapter
+from pydantic import BaseModel
 from typing import List
 
 load_dotenv()
@@ -16,8 +16,8 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="?", intents=intents)
 
-utc = datetime.timezone.utc
-time = datetime.time(hour=18, tzinfo=utc)
+fuso_brasil = datetime.timezone(datetime.timedelta(hours=-3))
+time = datetime.time(hour=18, tzinfo=fuso_brasil)
 
 canal = ""
 lider = ""
@@ -32,7 +32,9 @@ async def on_ready():
     canal = bot.get_channel(1525202052697821335)
     lider = await bot.fetch_user(834030976002031616)
 
-    await rotina_diaria()
+    if not rotina_diaria.is_running():
+        rotina_diaria.start()
+
 
 
 
@@ -61,9 +63,11 @@ async def rotina_diaria():
     historico_formatado = ListaMensagens(mensagens=historico_diario)
 
     response = requests.post(url, json=historico_formatado.model_dump())
-    report = response.json()
+    report_bruto = response.json()
+    report_tratado = report_bruto[:2000]
 
-    await lider.send(report)
+
+    await lider.send(report_tratado)
     
     
     
