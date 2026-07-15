@@ -12,5 +12,6 @@ services:
       - ./bot-backend/.env
     environment:
       - AGENT_URL=http://agent-backend:8000
+      - PYTHONUNBUFFERED=1
     depends_on:
       - agent-backend

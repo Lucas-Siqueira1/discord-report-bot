@@ -32,6 +32,10 @@ async def on_ready():
     canal = bot.get_channel(1525202052697821335)
     lider = await bot.fetch_user(834030976002031616)
 
+    await rotina_diaria()
+
+
+
 class Mensagem(BaseModel):
     autor: str
     hora: str
@@ -58,6 +62,8 @@ async def rotina_diaria():
 
     response = requests.post(url, json=historico_formatado.model_dump())
     report = response.json()
+
+    await lider.send(report)
     
     
     

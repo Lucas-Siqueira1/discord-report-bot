@@ -34,5 +34,9 @@ async def run(mensagens: str) -> str:
     
     return resposta_final
 
+if __name__ == "__main__":
+    resultado = asyncio.run(run("Mensagem de teste"))
+    print(resultado)
+
 
 
