@@ -59,5 +59,6 @@ report_agent = LlmAgent(
                 - If the analyzed period covers a week, group information by theme, not by day — the leader wants 
                 a consolidated view, not a diary.
                 - Ensure your response contains a maximum of 1800 characters; do not exceed this amount under any circumstances.
+                - Give your answer in brazilian portuguese.
                 """
 )
