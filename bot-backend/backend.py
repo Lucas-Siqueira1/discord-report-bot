@@ -17,7 +17,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="?", intents=intents)
 
 fuso_brasil = datetime.timezone(datetime.timedelta(hours=-3))
-time = datetime.time(hour=18, tzinfo=fuso_brasil)
+time = datetime.time(hour=22, minute=16, tzinfo=fuso_brasil)
 
 canal = ""
 lider = ""
