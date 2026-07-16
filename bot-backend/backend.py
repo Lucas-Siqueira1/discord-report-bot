@@ -1,11 +1,11 @@
 import os
-import datetime 
 import discord
+import datetime 
 import requests
-from discord.ext import commands, tasks
+from typing import List
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from typing import List
+from discord.ext import commands, tasks
 
 load_dotenv()
 
@@ -34,6 +34,9 @@ async def on_ready():
 
     if not rotina_diaria.is_running():
         rotina_diaria.start()
+    
+    if not rotina_semanal.is_running():
+        rotina_semanal.start()
 
 
 
@@ -48,6 +51,10 @@ class ListaMensagens(BaseModel):
 
 @tasks.loop(time=time)
 async def rotina_diaria():
+
+    dia_verificacao = datetime.date.today().weekday()
+    if dia_verificacao == 6:
+        return
 
     periodo = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=10)
     historico_diario = []
@@ -88,6 +95,14 @@ async def rotina_semanal():
                 "hora": message.created_at.strftime("%H:%M"),
                 "texto": message.content
             })
+
+    historico_formatado = ListaMensagens(mensagens=historico_semanal)
+
+    response = requests.post(url, json=historico_formatado.model_dump())
+    report_bruto = response.json()
+    report_tratado = report_bruto[:2000]
+
+    await lider.send(report_tratado)
         
    
 bot.run(token)
