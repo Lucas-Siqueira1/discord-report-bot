@@ -1,4 +1,5 @@
 from google.adk.agents import LlmAgent
+from report_agent.tools import num_caracteres
 
 report_agent = LlmAgent(
     name="report_agent",
@@ -60,5 +61,20 @@ report_agent = LlmAgent(
                 a consolidated view, not a diary.
                 - Ensure your response contains a maximum of 1800 characters; do not exceed this amount under any circumstances.
                 - Give your answer in brazilian portuguese.
-                """
+
+                ## MANDATORY LENGTH RESTRICTION
+                - The final report must strictly contain fewer than 2,000 characters.
+
+                [VALIDATION FLOW WITH GUARDRAIL]
+                1. Generate the initial draft of the report.
+                2. BEFORE returning the final response, use the `num_characters` tool to measure the draft.
+                3. If the returned value is equal to or greater than 2,000, initiate the reduction cycle with a STRICT LIMIT OF 3 ATTEMPTS:
+                - **Attempts 1 and 2:** Rewrite and summarize the text, eliminating redundancies and less critical sections. Use the `num_characters` 
+                tool after each rewrite to check the new length. If it drops below 2,000, exit the loop and send the response.
+                - **Attempt 3 (Circuit Breaker):** If on the third attempt the text is still greater than or equal to 2,000, perform an aggressive 
+                cut: keep only the core insights in bullet points or truncate the text to guarantee it stays below 1,950 characters.
+                4. **ABSOLUTE STOP RULE (FAIL-SAFE):** You are strictly forbidden from calling the `num_characters` tool more than 3 times per execution. 
+                Once the 3-attempt limit is reached, immediately output the shortest version achieved to prevent infinite loops.
+                """,
+    tools=[num_caracteres]
 )

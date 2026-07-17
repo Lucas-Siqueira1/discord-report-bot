@@ -32,6 +32,8 @@ async def on_ready():
     canal = bot.get_channel(1525202052697821335)
     lider = await bot.fetch_user(834030976002031616)
 
+    await teste()
+
     if not rotina_diaria.is_running():
         rotina_diaria.start()
     
@@ -48,6 +50,31 @@ class Mensagem(BaseModel):
 
 class ListaMensagens(BaseModel):
     mensagens: List[Mensagem]
+
+
+async def teste():
+
+    dia_verificacao = datetime.date.today().weekday()
+    if dia_verificacao == 6:
+        return
+
+    periodo = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=10)
+    historico_diario = []
+
+    async for message in canal.history(limit=None, after=periodo):
+        historico_diario.append({
+                "autor":message.author.name,
+                "hora": message.created_at.strftime("%H:%M"),
+                "texto": message.content
+            })
+    
+    historico_formatado = ListaMensagens(mensagens=historico_diario)
+
+    response = requests.post(url, json=historico_formatado.model_dump())
+    report_bruto = response.json()
+    print(len(report_bruto))
+
+    await lider.send(report_bruto)
 
 @tasks.loop(time=time)
 async def rotina_diaria():

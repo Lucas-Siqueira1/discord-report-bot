@@ -1,3 +1,5 @@
 google-adk
 google-adk[extensions]
 python-dotenv
+langfuse
+openinference-instrumentation-google-adk
