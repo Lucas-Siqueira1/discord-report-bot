@@ -8,7 +8,6 @@ from google.adk.sessions import InMemorySessionService
 from google.genai.types import Content, Part
 from langfuse import get_client
 from openinference.instrumentation.google_adk import GoogleADKInstrumentor
-from opentelemetry import trace
 
 load_dotenv()
 
