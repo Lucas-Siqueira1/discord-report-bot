@@ -1,16 +1,20 @@
-import asyncio
 import os
 import uuid
+from typing import List
+from fastapi import FastAPI
 from dotenv import load_dotenv
+from pydantic import BaseModel
+from langfuse import get_client
+from evaluation import quality_eval
 from google.adk.runners import Runner
 from report_agent.agent import report_agent
-from google.adk.sessions import InMemorySessionService
 from google.genai.types import Content, Part
-from langfuse import get_client
+from google.adk.sessions import InMemorySessionService
 from openinference.instrumentation.google_adk import GoogleADKInstrumentor
 
 load_dotenv()
 
+app = FastAPI()
 langfuse = get_client()
 
 try:
@@ -57,9 +61,25 @@ async def run(mensagens: str) -> str:
     
     return resposta_final
 
-if __name__ == "__main__":
-    resultado = asyncio.run(run("Mensagem de teste"))
-    print(resultado)
+class Mensagem(BaseModel):
+    autor: str
+    hora: str
+    texto: str
+
+class ListaMensagens(BaseModel):
+    mensagens: List[Mensagem]
+
+@app.post("/report")
+async def gerar_report(mensagens_obj: ListaMensagens):
+
+    mensagens_str = mensagens_obj.model_dump_json()
+    report = await run(mensagens_str)
+
+    evaluation = quality_eval(input=mensagens_str, output=report)
+    print(f"Score de qualidade: {evaluation.value}\n\nComentário: {evaluation.comment}")
+
+    return report
+
 
 
 
