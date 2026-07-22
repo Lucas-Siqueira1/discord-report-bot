@@ -37,7 +37,8 @@ runner = Runner(
 
 async def run(mensagens: str) -> str:
     session_id = str(uuid.uuid4())
-    session = await session_service.create_session(
+    
+    await session_service.create_session(
         app_name="report_bot",
         user_id="job_report",
         session_id=session_id
@@ -46,7 +47,6 @@ async def run(mensagens: str) -> str:
     conteudo = Content(parts=[Part(text=mensagens)])
 
     resposta_final = ""
-    trace_id = None
 
     async for event in runner.run_async(user_id="job_report", session_id=session_id, new_message=conteudo):
                 
